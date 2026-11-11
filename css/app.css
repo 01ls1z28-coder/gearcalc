@@ -97,8 +97,8 @@ a:hover { color: #fff; }
 .seg button.is-on { color: #fff; background: linear-gradient(180deg, rgba(108, 92, 255, .32), rgba(56, 224, 255, .1)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 0 18px -6px var(--violet-glow); }
 .seg-wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
 .seg-wrap button { padding: 6px 6px; line-height: 1.2; }
-.seg-count { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 2px; padding: 2px; width: 100%; }
-.seg-count button { padding: 6px 0; font-family: var(--mono); font-weight: 600; }
+.seg-count { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; padding: 3px; width: 100%; }
+.seg-count button { padding: 6px 0; min-height: 46px; font-family: var(--mono); font-weight: 600; font-size: .95rem; }
 .seg-sm button { padding: 4px 10px; min-height: 40px; font-size: .8rem; }
 .roll-extra { margin-top: 12px; }
 
@@ -176,6 +176,37 @@ a:hover { color: #fff; }
 .c-q { stroke: rgba(56, 224, 255, .45); stroke-width: 1; stroke-dasharray: 2 4; }
 .c-q-t { fill: var(--cyan); font: 600 10.5px var(--mono); }
 .c-qdot { fill: var(--cyan); }
+/* r2: compare setup B (magenta) */
+.c-gear-b { stroke: rgba(255, 122, 198, .16); stroke-width: 1; }
+.c-saw-b { fill: none; stroke: #ff7ac6; stroke-width: 2.2; stroke-linejoin: round; stroke-dasharray: 7 4; opacity: .95; }
+.c-drop-b { stroke: rgba(255, 122, 198, .7); stroke-width: 1.2; stroke-dasharray: 2 3; }
+.c-dot-b { fill: #ff7ac6; }
+.c-qdot-b { fill: #ff7ac6; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 8px; font-size: .8rem; color: var(--muted); }
+.legend[hidden] { display: none; }
+.legend .sw { display: inline-block; width: 22px; height: 0; border-top: 3px solid #38e0ff; vertical-align: middle; margin-right: 6px; }
+.legend .sw.sB { border-top: 3px dashed #ff7ac6; }
+.step-b { background: linear-gradient(180deg, rgba(255, 122, 198, .35), rgba(255, 122, 198, .1)) !important; color: #fff; }
+.cmp-card #cmp-body { margin-top: 14px; }
+.cmp-card #cmp-body[hidden] { display: none; }
+.cmp-card { border-color: rgba(255, 122, 198, .22); }
+.sm-in { font-size: 1.05rem !important; }
+.num-grid.one { grid-template-columns: minmax(0, 1fr) !important; }
+.fd-chip { min-width: 58px; min-height: 44px; }
+.fd-chip.is-on { color: #fff; border-color: rgba(56, 224, 255, .55); background: linear-gradient(180deg, rgba(108, 92, 255, .32), rgba(56, 224, 255, .12)); }
+#fdqB .fd-chip.is-on { border-color: rgba(255, 122, 198, .6); background: linear-gradient(180deg, rgba(255, 122, 198, .3), rgba(255, 122, 198, .08)); }
+#cmp-table-card[hidden] { display: none; }
+.cmp-tbl { width: 100%; border-collapse: collapse; font: 500 .8rem var(--mono); table-layout: fixed; }
+.cmp-tbl th:first-child { width: 3.2em; }
+.cmp-tbl td span { display: block; line-height: 1.45; }
+.cmp-tbl td .cA { color: #9fe8ff; }
+.cmp-tbl td .cB { color: #ff9fd5; }
+.cmp-tbl td .cD { color: var(--muted); font-size: .72rem; }
+.cmp-tbl caption { caption-side: top; text-align: left; font: 400 .76rem var(--sans, inherit); color: var(--muted); padding: 0 0 8px; }
+.cmp-tbl th, .cmp-tbl td { padding: 8px 4px; text-align: right; border-bottom: 1px solid var(--line-2); vertical-align: top; overflow-wrap: anywhere; }
+.cmp-tbl thead th { color: var(--muted); font-weight: 600; font-size: .72rem; }
+.cmp-tbl tbody th { text-align: left; color: #fff; }
+@media (min-width: 560px) { .cmp-tbl { font-size: .9rem; } .cmp-tbl th, .cmp-tbl td { padding: 10px 10px; } }
 .c-empty { fill: var(--dim); font: 14px var(--sans); }
 
 /* sources */
@@ -194,7 +225,8 @@ a:hover { color: #fff; }
   .num-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .num-cell:last-child { grid-column: auto; }
   .seg-wrap { display: inline-grid; width: auto; }
-  .seg-count { display: inline-grid; width: auto; grid-template-columns: repeat(8, 44px); }
+  .seg-count { display: inline-grid; width: auto; grid-template-columns: repeat(9, 48px); }
+  .seg-count button { min-height: 44px; }
 }
 @media (min-width: 720px) {
   body { padding: 18px 24px 36px; }

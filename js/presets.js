@@ -20,6 +20,14 @@
     GM_4L60E: { title: 'GM Service Information — Transmission General Specifications (Hydra-Matic 4L60-E), 2004 GMC Sierra Denali (copy hosted by gm.saturn.team)', url: 'https://gm.saturn.team/GMC_Truck/GMC_Sierra_Denali/2004/30/5/2820/6905' },
     GM_4L80E: { title: 'GM Service Information — Transmission General Specifications (Hydra-Matic 4L80-E), 2002 Unit Repair (copy hosted by gm.saturn.team)', url: 'https://gm.saturn.team/Generic/Unit_Repair/2002/15/5/1992/7234' },
     TCI: { title: 'TCI Automotive — "TCI Transmission Gearing Ratios" chart (OEM rows)', url: 'https://www.tciauto.com/gear-ratios' },
+    TCI_PG: { title: 'TCI Automotive — "TCI Transmission Gearing Ratios" chart, Powerglide (OEM) rows, plus the "Powerglide Planetary Low Gear Ratios" tooth-count table', url: 'https://www.tciauto.com/gear-ratios' },
+    GM_C5_2001: { title: 'GM — The 2001 Corvette Sourcebook (press kit), "Manual Transmission Upgrades", Gear Ratio Comparison, LS1 & MM6 column (copy hosted by indovina.us)', url: 'https://indovina.us/~mai/corvette/z06_pow_trans.htm' },
+    HOTROD_98: { title: 'HOT ROD magazine, "Rapid Transit Authorities" (Sep 1998), technical specifications, \'98 Camaro Z28: "Stock Borg-Warner T-56 six-speed manual"', url: 'https://www.hotrod.com/features/rapid-transit-authorities-982-1655-74-1' },
+    TD_T56_04: { title: 'Transmission Digest, M. Weinberg, "Six-Speed Solutions" (May 2004), "LS1 (MM6) ratios"', url: 'https://www.transmissiondigest.com/six-speed-solutions/' },
+    TREMEC_CAT20: { title: 'TREMEC — Performance Product Catalog F_TRMC_0220_V1, TKO 5-speed "Available Models" table', url: 'https://tremec.com/wp-content/uploads/2023/05/Performance-Product-Catalog-F_TRMC_0220_V1.pdf' },
+    TREMEC_TKO11: { title: 'TREMEC — TKO product sheet TRPM-TKO-0711, gear-ratio table', url: 'https://tremec.com/wp-content/uploads/2023/05/TRPM-TKO-0711_145.pdf' },
+    HONDA_S2K04: { title: 'Honda (hondanews.com) — "2004 Honda S2000 – Powertrain" (Oct 1 2003), Transmission Gear Ratios table with 2004 and 2003 columns and the note "Net gear ratio change occurs through modification of the secondary gear reduction ratio inside the transmission"', url: 'https://hondanews.com/en-US/releases/release-4f6f0a361216ba882f335c004c34c4b2-2004-honda-s2000-powertrain' },
+    HONDA_JP01: { title: 'Honda Japan — S2000 (model ended Aug 2001) 主要諸元: 変速比 and 減速比（1次/2次）1.160/4.100', url: 'https://www.honda.co.jp/auto-archive/s2000/2001/shogen.html' },
     FCA_RAM17: { title: 'FCA Canada — 2017 Ram 1500 Canadian Specifications, "Transmission: TorqueFlite 8HP70 Eight-Speed Automatic"', url: 'https://www.fcapresskit.ca/2017/Contents/Text/PDFs/Ram/1500/CN_2017_RAM_1500_SP.pdf' }
   };
 
@@ -32,6 +40,9 @@
     { id: 'tkx-287-81', name: 'TKX 2.87 / 0.81', group: 'TREMEC manual', type: 'manual', ratios: [2.87, 1.89, 1.28, 1.00, 0.81], note: 'TCET17722 (GM) / TCET18084 (Ford)', src: ['TREMEC_TKX', 'TREMEC_BLOG'] },
     { id: 'tkx-287-68', name: 'TKX 2.87 / 0.68', group: 'TREMEC manual', type: 'manual', ratios: [2.87, 1.89, 1.28, 1.00, 0.68], note: 'TCET17805 (GM) / TCET17765 (Ford)', src: ['TREMEC_TKX', 'TREMEC_BLOG'] },
     { id: 'tkx-327', name: 'TKX 3.27', group: 'TREMEC manual', type: 'manual', ratios: [3.27, 1.98, 1.34, 1.00, 0.72], note: 'TCET18083 (GM) / TCET18085, TCET18086 (Ford)', src: ['TREMEC_TKX', 'TREMEC_BLOG'] },
+    { id: 'tko500', name: 'TKO 500', group: 'TREMEC manual', type: 'manual', ratios: [3.27, 1.98, 1.34, 1.00, 0.68], note: 'TCET4615 / TCET4616 / TCET5201. TREMEC’s 2020 catalog lists 2nd as 1.98; the older 2011 TKO sheet lists 1.97. The newer catalog value is used.', src: ['TREMEC_CAT20', 'TREMEC_TKO11'] },
+    { id: 'tko600-82', name: 'TKO 600 / 0.82', group: 'TREMEC manual', type: 'manual', ratios: [2.87, 1.89, 1.28, 1.00, 0.82], note: 'TCET4617 (Ford) / TCET4618 (GM)', src: ['TREMEC_CAT20', 'TREMEC_TKO11'] },
+    { id: 'tko600-64', name: 'TKO 600 / 0.64', group: 'TREMEC manual', type: 'manual', ratios: [2.87, 1.89, 1.28, 1.00, 0.64], note: 'TCET5008 (Ford) / TCET5009 (GM)', src: ['TREMEC_CAT20', 'TREMEC_TKO11'] },
     { id: 't5', name: 'T-5 (Ford)', group: 'TREMEC manual', type: 'manual', ratios: [2.95, 1.94, 1.34, 1.00, 0.63], note: 'TREMEC aftermarket T-5, Ford 10-spline', src: ['TREMEC_BLOG'] },
     // ---- TR-6060 OEM applications (TREMEC product sheet)
     { id: 'tr6060-ss', name: 'TR-6060 Camaro SS', group: 'TR-6060 (OEM)', type: 'manual', ratios: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50], note: 'Camaro SS column', src: ['TREMEC_TR6060'] },
@@ -40,8 +51,13 @@
     { id: 'tr6060-1le', name: 'TR-6060 ZL1 1LE', group: 'TR-6060 (OEM)', type: 'manual', ratios: [2.29, 1.63, 1.21, 1.00, 0.82, 0.68], note: 'Camaro ZL1 / 1LE column', src: ['TREMEC_TR6060'] },
     { id: 'tr6060-hellcat', name: 'TR-6060 Challenger Hellcat', group: 'TR-6060 (OEM)', type: 'manual', ratios: [2.26, 1.58, 1.19, 1.00, 0.77, 0.63], note: 'Challenger Hellcat column', src: ['TREMEC_TR6060'] },
     // ---- other OEM manual
+    { id: 't56-ls1', name: 'T56 LS1 (’98–02 F-body, C5)', group: 'OEM manual', type: 'manual', ratios: [2.66, 1.78, 1.30, 1.00, 0.74, 0.50], note: 'Factory MM6/MN6 T56 behind the LS1: 1998–2002 Camaro Z28/SS and Firebird Formula/Trans Am, and the C5 Corvette (not the Z06 M12). The GM 2001 Corvette Sourcebook gives the C5 set. HOT ROD (stock ’98 Z28) and Transmission Digest ("LS1 (MM6)") give the same numbers.', src: ['GM_C5_2001', 'HOTROD_98', 'TD_T56_04'] },
+    { id: 's2000-ap1', name: 'Honda S2000 2.0 L (2000–03)', group: 'OEM manual', type: 'manual', ratios: [3.133, 2.045, 1.481, 1.161, 0.970, 0.810], reduction: 1.160, note: 'Honda lists the gearbox ratios plus an in-box reduction of 1.160 that multiplies every gear (factory final drive 4.100). Honda’s 2003 column and the Honda Japan 2001 sheet give 5th/6th as 0.970/0.810; Honda’s US 2001/2003 spec sheets print 0.971/0.811.', src: ['HONDA_S2K04', 'HONDA_JP01'] },
+    { id: 's2000-04', name: 'Honda S2000 2.2 L (2004)', group: 'OEM manual', type: 'manual', ratios: [3.133, 2.045, 1.481, 1.161, 0.943, 0.763], reduction: 1.208, note: 'Same gearbox ratios for 1st–4th, with the in-box (secondary) reduction raised to 1.208 (factory final drive 4.100). Honda notes the net change comes from that reduction.', src: ['HONDA_S2K04'] },
     { id: 'mt82-11', name: 'Ford MT82 (2011 Mustang GT)', group: 'OEM manual', type: 'manual', ratios: [3.66, 2.43, 1.69, 1.32, 1.00, 0.65], note: '2011 Mustang GT 6-speed manual', src: ['FORD_MUSTANG11'] },
     // ---- GM automatics
+    { id: 'pg-176', name: 'Powerglide 1.76', group: 'GM automatic', type: 'auto', ratios: [1.76, 1.00], note: 'TCI chart, Powerglide (OEM) 1.76 row', src: ['TCI_PG'] },
+    { id: 'pg-182', name: 'Powerglide 1.82', group: 'GM automatic', type: 'auto', ratios: [1.82, 1.00], note: 'TCI chart, Powerglide (OEM) 1.82 row', src: ['TCI_PG'] },
     { id: 'th350', name: 'TH350', group: 'GM automatic', type: 'auto', ratios: [2.52, 1.52, 1.00], note: 'TCI chart, TH350 (OEM) row', src: ['TCI'] },
     { id: 'th400', name: 'TH400', group: 'GM automatic', type: 'auto', ratios: [2.48, 1.48, 1.00], note: 'TCI chart, TH400 (OEM) row', src: ['TCI'] },
     { id: '200-4r', name: '200-4R', group: 'GM automatic', type: 'auto', ratios: [2.78, 1.57, 1.00, 0.67], note: 'TCI chart, 200-4R (OEM) row', src: ['TCI'] },
@@ -64,14 +80,14 @@
   ];
 
   var EXCLUDED = [
-    { name: 'Powerglide', why: 'Only 2 forward speeds (TCI lists 1.76 or 1.82 / 1.00) — below GearCalc’s 3–10 gear range. Custom also requires at least 3 gears.' },
-    { name: 'Honda S2000 6-speed', why: 'Honda lists gear ratios plus a separate 1.160 "primary gear reduction" (hondanews.com 2003 specs); how that combines with the listed ratios was not confirmed, so it is left out rather than guessed.' },
-    { name: 'TREMEC TKO 500/600', why: 'Discontinued; not on TREMEC’s current published ratio list, and no TREMEC source was confirmed this round.' },
-    { name: 'OEM T56 (1993–2002 F-body, Viper, etc.)', why: 'Several factory gearsets exist; no single OEM-published table was confirmed this round.' },
+    { name: 'OEM T56, 1993 F-body (M28 / M29) and 1994–97 LT1', why: 'Only forum posts were found for these sets. No GM, TREMEC or magazine source was confirmed.' },
+    { name: 'T56 M12 (C5 Z06)', why: 'Sources disagree on 5th/6th. GM’s 2001 Sourcebook gives 0.84 / 0.57, Transmission Digest gives 0.80 / 0.62, and other pages give 0.56.' },
     { name: 'TR-6060 2010–2011 Camaro SS', why: 'Published reports disagree (some list 2.66 first, some 3.01); the TREMEC sheet lists only the current Camaro SS set, which is included.' },
     { name: 'ZF 8HP45 / 8HP90 and other 8HP variants', why: 'Only the 8HP70 (TorqueFlite) set was confirmed from an OEM spec sheet.' },
+    { name: 'Powerglide aftermarket ratios (1.58 / 1.65 / 1.80 / 1.92 / 1.98)', why: 'These are TCI’s own aftermarket gearsets, not factory ratios. Enter one as Custom if you run it.' },
     { name: 'Toyota manuals', why: 'No well-sourced OEM ratio table was confirmed this round.' }
   ];
+
 
   var lib = { presets: P, sources: SRC, excluded: EXCLUDED };
   root.GEAR_PRESETS = lib;

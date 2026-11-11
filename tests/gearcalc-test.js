@@ -125,8 +125,11 @@ throws('rolling', function () { G.effectiveDiameter(26, 'loaded', 14); }, 'loade
 
 // ---------------------------------------------------------------- ratio validation
 ok('ratios', G.validateRatios([3, 2, 1]) === null, '3 gears OK');
+ok('ratios', G.validateRatios([1.76, 1]) === null, '2 gears OK (Powerglide 1.76/1.00)');
+ok('ratios', G.validateRatios([2, 1]) === null, '2 gears OK (2/1)');
+ok('ratios', /2 to 10/.test(G.validateRatios([1])), 'one gear rejected with "2 to 10" message');
 ok('ratios', G.validateRatios([5, 4, 3, 2, 1.5, 1.2, 1, 0.8, 0.6, 0.5]) === null, '10 gears OK');
-[[2, 1], [], [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.8, 0.6], [3, 3, 1], [3, 1, 2], [9, 2, 1], [3, 2, 0.2], [3, NaN, 1], 'abc', null].forEach(function (r) {
+[[1], [1.5], [], [1, 1], [1, 2], [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.8, 0.6], [3, 3, 1], [3, 1, 2], [9, 2, 1], [3, 2, 0.2], [3, NaN, 1], 'abc', null].forEach(function (r) {
   ok('ratios', typeof G.validateRatios(r) === 'string', 'rejects ' + JSON.stringify(r));
 });
 
@@ -142,16 +145,26 @@ var SNAP = {
   '10l80': [4.696, 2.985, 2.156, 1.779, 1.526, 1.278, 1.000, 0.854, 0.689, 0.636],
   'c4c6': [2.46, 1.46, 1.00], 'aod': [2.40, 1.47, 1.00, 0.67], '4r70w': [2.84, 1.55, 1.00, 0.70], '6r80': [4.17, 2.34, 1.52, 1.14, 0.87, 0.69],
   '10r80': [4.696, 2.985, 2.146, 1.769, 1.520, 1.275, 1.000, 0.854, 0.689, 0.636],
-  'tf727': [2.45, 1.45, 1.00], 'a500': [2.74, 1.54, 1.00, 0.69], 'a518': [2.45, 1.45, 1.00, 0.69], '8hp70': [4.71, 3.14, 2.10, 1.67, 1.29, 1.00, 0.84, 0.67]
+  'tf727': [2.45, 1.45, 1.00], 'a500': [2.74, 1.54, 1.00, 0.69], 'a518': [2.45, 1.45, 1.00, 0.69], '8hp70': [4.71, 3.14, 2.10, 1.67, 1.29, 1.00, 0.84, 0.67],
+  // r2 additions
+  'tko500': [3.27, 1.98, 1.34, 1.00, 0.68], 'tko600-82': [2.87, 1.89, 1.28, 1.00, 0.82], 'tko600-64': [2.87, 1.89, 1.28, 1.00, 0.64],
+  't56-ls1': [2.66, 1.78, 1.30, 1.00, 0.74, 0.50],
+  's2000-ap1': [3.133, 2.045, 1.481, 1.161, 0.970, 0.810], 's2000-04': [3.133, 2.045, 1.481, 1.161, 0.943, 0.763],
+  'pg-176': [1.76, 1.00], 'pg-182': [1.82, 1.00]
 };
+// in-box reductions transcribed from Honda (every other preset has none)
+var RED = { 's2000-ap1': 1.160, 's2000-04': 1.208 };
 ok('presets', PD.presets.length === Object.keys(SNAP).length, 'preset count = snapshot count (' + PD.presets.length + ')');
 var ids = {};
 PD.presets.forEach(function (p) {
   ok('presets', !ids[p.id], 'unique id ' + p.id); ids[p.id] = 1;
   ok('presets', !!SNAP[p.id], p.id + ' is in the snapshot');
   ok('presets', SNAP[p.id] && JSON.stringify(SNAP[p.id]) === JSON.stringify(p.ratios), p.id + ' ratios match the snapshot exactly');
-  ok('presets', G.validateRatios(p.ratios) === null, p.id + ' 3–10 gears, 0.30–8.00, strictly descending');
-  ok('presets', p.ratios[0] >= 2.0 && p.ratios[0] <= 5.0, p.id + ' first gear plausible (2.0–5.0)');
+  ok('presets', G.validateRatios(p.ratios) === null, p.id + ' 2–10 gears, 0.30–8.00, strictly descending');
+  // 2-speed Powerglide first gear is 1.76/1.82 per TCI, so 2-speeds get a 1.5 floor; everything else keeps 2.0
+  var fmin = p.ratios.length === 2 ? 1.5 : 2.0;
+  ok('presets', p.ratios[0] >= fmin && p.ratios[0] <= 5.0, p.id + ' first gear plausible (' + fmin + '–5.0)');
+  ok('presets', (p.reduction || null) === (RED[p.id] || null), p.id + ' reduction = ' + (RED[p.id] || 'none'));
   ok('presets', p.ratios[p.ratios.length - 1] >= 0.45 && p.ratios[p.ratios.length - 1] <= 1.0, p.id + ' top gear plausible (0.45–1.00)');
   ok('presets', p.ratios.some(function (r) { return r <= 1.0; }), p.id + ' reaches a direct (1.00) or overdrive gear');  // 6L80 / 6R80 have no 1:1 gear
   for (var i = 1; i < p.ratios.length; i++) ok('presets', p.ratios[i - 1] / p.ratios[i] < 2.0, p.id + ' step ' + i + ' < 2.0');
@@ -163,6 +176,47 @@ Object.keys(PD.sources).forEach(function (k) { ok('presets', PD.presets.some(fun
 ok('presets', Array.isArray(PD.excluded) && PD.excluded.length > 0 && PD.excluded.every(function (x) { return x.name && x.why; }), 'excluded list documented');
 ok('presets', PD.excluded.every(function (x) { return !PD.presets.some(function (p) { return p.name === x.name; }); }), 'no excluded item shipped as preset');
 
+// ---------------------------------------------------------------- r2: in-box reduction (S2000) maths
+function pre(id) { return PD.presets.filter(function (p) { return p.id === id; })[0]; }
+var s1 = pre('s2000-ap1'), s4 = pre('s2000-04');
+var tr1 = G.table({ ratios: s1.ratios, red: s1.reduction, dia: 25.68, fd: 4.1, slip: 0, redline: 9000, rpm: 3000, speed: 60 });
+tr1.forEach(function (r, i) {
+  near('reduction', r.overall, s1.ratios[i] * 1.160 * 4.1, 1e-12, 'S2000 overall = gear × 1.160 × 4.100, gear ' + r.gear);
+  near('reduction', r.effective, s1.ratios[i] * 1.160, 1e-12, 'effective ratio gear ' + r.gear);
+  ok('reduction', r.ratio === s1.ratios[i], 'row keeps raw ratio ' + r.gear);
+  near('reduction', r.topMph, G.mph(9000, 25.68, s1.ratios[i] * 1.160, 4.1, 0), 1e-12, 'top speed uses effective ratio ' + r.gear);
+});
+near('reduction', tr1[0].overall, 14.9005, 0.0001, 'S2000 1st overall ≈ 14.9005 (3.133 × 1.160 × 4.100)');
+var plain = G.table({ ratios: s1.ratios, dia: 25.68, fd: 4.1 * 1.160, slip: 0, redline: 9000, rpm: 3000, speed: 60 });
+tr1.forEach(function (r, i) { near('reduction', r.topMph, plain[i].topMph, 1e-9, 'reduction ≡ folding it into FD, gear ' + r.gear); });
+tr1.forEach(function (r, i) { if (r.landRpm) near('reduction', r.landRpm, G.dropRpm(9000, s1.ratios[i], s1.ratios[i + 1]), 1e-9, 'shift landing unaffected by reduction ' + r.gear); });
+near('reduction', s4.reduction / s1.reduction - 1, 0.0414, 0.0001, '2004 reduction 1.208 vs 1.160 = +4.14% (Honda: about 4% lower)');
+var tr4 = G.table({ ratios: s4.ratios, red: s4.reduction, dia: 25.68, fd: 4.1, slip: 0, redline: 8000, rpm: 3000, speed: 60 });
+near('reduction', tr4[0].overall / tr1[0].overall - 1, 0.0414, 0.0001, '2004 1st overall 4.14% lower-geared than 2000–03');
+var t1 = G.table({ ratios: [3, 2, 1], dia: 26, fd: 3.42, slip: 0, redline: 6000, rpm: 3000, speed: 60 });
+var t1b = G.table({ ratios: [3, 2, 1], red: 1, dia: 26, fd: 3.42, slip: 0, redline: 6000, rpm: 3000, speed: 60 });
+ok('reduction', JSON.stringify(t1) === JSON.stringify(t1b), 'red omitted ≡ red 1');
+[0, 0.4, 3.5, NaN, -1].forEach(function (bad) {
+  var threw = false; try { G.table({ ratios: [3, 2, 1], red: bad, dia: 26, fd: 3.42, slip: 0, redline: 6000, rpm: 3000, speed: 60 }); } catch (e) { threw = true; }
+  ok('reduction', threw, 'reduction ' + bad + ' throws');
+});
+// r2: 2-speed table
+var pg = G.table({ ratios: pre('pg-176').ratios, dia: 28, fd: 4.56, slip: 0, redline: 7000, rpm: 3000, speed: 60 });
+ok('twospeed', pg.length === 2 && pg[1].landRpm === null, 'Powerglide table has 2 rows');
+near('twospeed', pg[0].landRpm, 7000 / 1.76, 1e-9, 'PG 1.76 shift lands at 7000/1.76');
+near('twospeed', pre('pg-182').ratios[0] / pre('pg-176').ratios[0] - 1, 0.0341, 0.0001, '1.82 vs 1.76 first gear = +3.41%');
+// r2: OEM T56 LS1 (Jorge's 2001 Z28) and TKO
+ok('t56', JSON.stringify(pre('t56-ls1').ratios) === '[2.66,1.78,1.3,1,0.74,0.5]', 'T56 LS1 = 2.66/1.78/1.30/1.00/0.74/0.50');
+ok('t56', /F-body/.test(pre('t56-ls1').name) && /C5/.test(pre('t56-ls1').name), 'T56 LS1 name covers F-body and C5');
+ok('t56', pre('t56-ls1').src.indexOf('GM_C5_2001') >= 0, 'T56 LS1 cites the GM sourcebook');
+var z = G.table({ ratios: pre('t56-ls1').ratios, dia: G.parseTire('275/40R17').diameter, fd: 3.42, slip: 0, redline: 6000, rpm: 3000, speed: 60 });
+near('t56', z[5].rpmAtSpeed, G.rpmAt(60, G.parseTire('275/40R17').diameter, 0.5, 3.42, 0), 1e-9, 'Z28 6th @60 consistent');
+ok('t56', z[5].rpmAtSpeed > 1000 && z[5].rpmAtSpeed < 1400, '2001 Z28 (275/40R17, 3.42) 6th @ 60 mph ≈ ' + Math.round(z[5].rpmAtSpeed) + ' rpm');
+ok('t56', pre('tko500').ratios[1] === 1.98 && /1\.97/.test(pre('tko500').note), 'TKO500 2nd = 1.98 with the 1.97 conflict noted');
+ok('t56', /0\.971/.test(s1.note), 'S2000 note records 0.971/0.811 printing');
+// r2: excluded list keeps the unsourced T56 variants out
+['M12', '1994', 'Powerglide aftermarket'].forEach(function (k) { ok('t56', PD.excluded.some(function (x) { return x.name.indexOf(k) >= 0; }), 'excluded mentions ' + k); });
+
 // ---------------------------------------------------------------- page files are file:// safe
 var html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 var allJs = ['js/presets.js', 'js/gear.js', 'js/app.js'].map(function (f) { return fs.readFileSync(path.join(root, f), 'utf8'); }).join('\n');
@@ -173,6 +227,17 @@ ok('files', !/\bfetch\s*\(|XMLHttpRequest|import\s*\(|\bimport\s+[\w{*]/.test(al
 ok('files', !/<link[^>]+href="https?:/.test(html) && !/<script[^>]+src="https?:/.test(html), 'no CDN');
 ok('files', !/@import|url\(\s*['"]?https?:/.test(css), 'no external CSS/fonts');
 ok('files', /Created by Jorge Guerra/.test(html), 'credit present');
+// r2 page pieces
+var FDQ = ['2.73', '3.08', '3.23', '3.42', '3.55', '3.73', '3.90', '4.10', '4.11', '4.30', '4.56', '4.88', '5.13'];
+['fdq', 'fdqB'].forEach(function (id) {
+  var m = html.match(new RegExp('id="' + id + '"[^>]*>([\\s\\S]*?)</div>'));
+  var vals = m ? (m[1].match(/data-v="([0-9.]+)"/g) || []).map(function (s) { return s.slice(8, -1); }) : [];
+  ok('files', JSON.stringify(vals) === JSON.stringify(FDQ), id + ' has the 13 final-drive chips in order');
+});
+['cmp-on', 'cmp-body', 'presetsB', 'gcountB', 'ratiosB', 'fdB', 'tireB', 'cmp-tbl', 'cmp-table-card', 'chart-legend'].forEach(function (id) { ok('files', html.indexOf('id="' + id + '"') >= 0, 'page has #' + id); });
+ok('files', /for \(var n = 2; n <= 10; n\+\+\)/.test(allJs), 'gear-count buttons 2–10');
+ok('files', /\.seg-count button \{[^}]*min-height: 4[4-9]px/.test(css), 'gear-count buttons min-height ≥ 44px');
+ok('files', !/<select/.test(html), 'no dropdowns');
 ok('files', !/gtag|analytics|googletagmanager|sentry|mixpanel/i.test(html + allJs), 'no analytics');
 
 console.log('\nGroups:'); Object.keys(groups).forEach(function (g) { console.log('  ' + g + ': ' + groups[g][0] + ' pass, ' + groups[g][1] + ' fail'); });

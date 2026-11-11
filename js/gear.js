@@ -87,7 +87,7 @@
   }
 
   function validateRatios(r) {
-    if (!Array.isArray(r) || r.length < 3 || r.length > 10) return 'Use 3 to 10 forward gears';
+    if (!Array.isArray(r) || r.length < 2 || r.length > 10) return 'Use 2 to 10 forward gears';
     for (var i = 0; i < r.length; i++) {
       if (!num(r[i]) || r[i] < 0.3 || r[i] > 8) return 'Gear ' + (i + 1) + ' must be 0.30–8.00';
       if (i && !(r[i] < r[i - 1])) return 'Gear ' + (i + 1) + ' must be numerically lower than gear ' + i;
@@ -96,13 +96,15 @@
   }
 
   // Full per-gear table.
+  // o.red: optional in-box reduction that multiplies every gear (e.g. Honda S2000 1.160); default 1.
   function table(o) {
-    var rows = [];
+    var rows = [], red = o.red == null ? 1 : o.red;
+    if (!(red >= 0.5 && red <= 3)) throw new Error('In-box reduction must be 0.5–3');
     for (var i = 0; i < o.ratios.length; i++) {
-      var g = o.ratios[i], next = o.ratios[i + 1];
+      var g = o.ratios[i] * red, next = o.ratios[i + 1] != null ? o.ratios[i + 1] * red : undefined;
       var top = mph(o.redline, o.dia, g, o.fd, o.slip);
       rows.push({
-        gear: i + 1, ratio: g, overall: g * o.fd,
+        gear: i + 1, ratio: o.ratios[i], effective: g, overall: g * o.fd,
         mphAtRpm: mph(o.rpm, o.dia, g, o.fd, o.slip),
         rpmAtSpeed: rpmAt(o.speed, o.dia, g, o.fd, o.slip),
         topMph: top,

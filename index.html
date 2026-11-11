@@ -107,8 +107,42 @@
             </div>
           </div>
         </div>
+        <p class="mini-h">Common final drives</p>
+        <div class="chips-row fdq" id="fdq" data-for="fd"><button type="button" class="chip-btn fd-chip" data-v="2.73">2.73</button><button type="button" class="chip-btn fd-chip" data-v="3.08">3.08</button><button type="button" class="chip-btn fd-chip" data-v="3.23">3.23</button><button type="button" class="chip-btn fd-chip" data-v="3.42">3.42</button><button type="button" class="chip-btn fd-chip" data-v="3.55">3.55</button><button type="button" class="chip-btn fd-chip" data-v="3.73">3.73</button><button type="button" class="chip-btn fd-chip" data-v="3.90">3.90</button><button type="button" class="chip-btn fd-chip" data-v="4.10">4.10</button><button type="button" class="chip-btn fd-chip" data-v="4.11">4.11</button><button type="button" class="chip-btn fd-chip" data-v="4.30">4.30</button><button type="button" class="chip-btn fd-chip" data-v="4.56">4.56</button><button type="button" class="chip-btn fd-chip" data-v="4.88">4.88</button><button type="button" class="chip-btn fd-chip" data-v="5.13">5.13</button></div>
         <p class="hint" id="slip-hint">Slip is for automatics with an unlocked converter: road speed is that % below the no-slip value, so engine RPM at a given speed is the no-slip RPM ÷ (1 − slip). Leave at 0 for a manual or a locked converter.</p>
         <p id="dt-msg" class="in-msg err" aria-live="polite"></p>
+      </section>
+
+
+      <section class="card cmp-card" aria-labelledby="cmp-h">
+        <div class="card-head"><h2 id="cmp-h"><span class="step-n step-b">4</span>Compare a gear swap</h2><p class="card-sub">Optional second setup, drawn in magenta on the same chart</p></div>
+        <div class="seg" id="cmp-on" role="radiogroup" aria-label="Compare overlay">
+          <button type="button" role="radio" data-id="off">Off</button><button type="button" role="radio" data-id="on">Compare on</button>
+        </div>
+        <div id="cmp-body" hidden>
+          <p class="hint">Setup B shares the engine inputs above: redline, slip, and the query RPM and speed. Pick B's gearbox, its final drive and, if you like, a different tire.</p>
+          <p class="mini-h">B tire (leave blank to use the same tire)</p>
+          <div class="field" id="tireB-field"><label class="sr" for="tireB">Setup B tire size</label><input id="tireB" class="big-in sm-in" type="text" autocomplete="off" spellcheck="false" placeholder="same as above" aria-describedby="tireB-msg"><span class="field-sym" id="tireB-kind"></span></div>
+          <p id="tireB-msg" class="in-msg" aria-live="polite"></p>
+          <p class="mini-h">B transmission</p>
+          <div id="presetsB" class="presets" role="radiogroup" aria-label="Setup B transmission preset"></div>
+          <div class="src-box" id="preset-srcB" aria-live="polite"></div>
+          <p class="mini-h" id="gcountB-lbl">B forward gears</p>
+          <div class="seg seg-count" id="gcountB" role="radiogroup" aria-labelledby="gcountB-lbl"></div>
+          <div class="ratios" id="ratiosB"></div>
+          <p id="ratio-msgB" class="in-msg" aria-live="polite"></p>
+          <div class="num-grid one">
+            <div class="num-cell">
+              <label class="lbl" for="fdB">B final drive</label>
+              <div class="stepper"><button type="button" class="step" data-for="fdB" data-step="-1" aria-label="Lower B final drive">−</button>
+                <input id="fdB" type="text" inputmode="decimal" value="4.10" autocomplete="off"><button type="button" class="step" data-for="fdB" data-step="1" aria-label="Higher B final drive">+</button></div>
+              <span class="unit">ratio : 1</span>
+            </div>
+          </div>
+          <p class="mini-h">Common final drives</p>
+          <div class="chips-row fdq" id="fdqB" data-for="fdB"><button type="button" class="chip-btn fd-chip" data-v="2.73">2.73</button><button type="button" class="chip-btn fd-chip" data-v="3.08">3.08</button><button type="button" class="chip-btn fd-chip" data-v="3.23">3.23</button><button type="button" class="chip-btn fd-chip" data-v="3.42">3.42</button><button type="button" class="chip-btn fd-chip" data-v="3.55">3.55</button><button type="button" class="chip-btn fd-chip" data-v="3.73">3.73</button><button type="button" class="chip-btn fd-chip" data-v="3.90">3.90</button><button type="button" class="chip-btn fd-chip" data-v="4.10">4.10</button><button type="button" class="chip-btn fd-chip" data-v="4.11">4.11</button><button type="button" class="chip-btn fd-chip" data-v="4.30">4.30</button><button type="button" class="chip-btn fd-chip" data-v="4.56">4.56</button><button type="button" class="chip-btn fd-chip" data-v="4.88">4.88</button><button type="button" class="chip-btn fd-chip" data-v="5.13">5.13</button></div>
+          <p id="cmp-msg" class="in-msg err" aria-live="polite"></p>
+        </div>
       </section>
 
       <!-- Results -->
@@ -117,8 +151,14 @@
         <div class="gear-cards" id="gear-cards"></div>
       </section>
 
+      <section class="card cmp-table" id="cmp-table-card" aria-labelledby="cmpt-h" hidden>
+        <div class="card-head"><h2 id="cmpt-h">A vs B per gear</h2><p class="card-sub mono" id="cmpt-sub"></p></div>
+        <div class="tbl-wrap"><table class="cmp-tbl" id="cmp-tbl"></table></div>
+      </section>
+
       <section class="card chart-card" aria-labelledby="chart-h">
         <div class="card-head"><h2 id="chart-h">Speed vs RPM</h2><p class="card-sub">Shift at redline · labels above the peaks are gears · amber dashes are the RPM drop on each shift</p></div>
+        <div class="legend" id="chart-legend" hidden><span><i class="sw sA"></i>A (your setup)</span><span><i class="sw sB"></i>B (compare)</span></div>
         <div class="chart-wrap" id="chart-wrap"><svg id="chart" role="img" aria-labelledby="chart-h chart-desc"><desc id="chart-desc">Sawtooth of engine RPM against road speed, shifting at redline in each gear.</desc></svg></div>
       </section>
 
@@ -127,6 +167,7 @@
         <ul class="conv-notes">
           <li><b>Speed:</b> mph = RPM × D × π ÷ (gear × final drive × 1056) × (1 − slip). 1056 = 63 360 in per mile ÷ 60 min per hour, both exact. km/h = mph × 1.609344 (exact).</li>
           <li><b>RPM at speed:</b> RPM = mph × gear × final drive × 1056 ÷ (π × D) ÷ (1 − slip).</li>
+          <li><b>In-box reduction:</b> some gearboxes (Honda S2000) list a reduction that multiplies every gear. GearCalc applies it as gear × reduction × final drive, and shows it wherever it isn't 1.</li>
           <li><b>Shift landing:</b> landing RPM = redline × next ratio ÷ current ratio; drop = redline − landing.</li>
           <li><b>Tire diameter:</b> metric = rim + 2 × section × aspect ÷ 100 ÷ 25.4 (inch = 25.4 mm exactly). Flotation = the first number. Revs per mile = 63 360 ÷ (π × D).</li>
           <li><b>Diameter used:</b> the unloaded, nominal diameter by default. A loaded tire rolls on a slightly smaller effective radius, so real speed at a given RPM is a little lower. Enter a rolling factor or a measured loaded radius if you have one. GearCalc does not assume a value.</li>
