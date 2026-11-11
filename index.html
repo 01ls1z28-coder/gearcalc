@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#05060a">
+  <meta name="description" content="Gear and RPM calculator: speed per gear, RPM at speed, top speed at redline, shift drops and a sawtooth chart.">
+  <title>GearCalc — Gear &amp; RPM</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="obs">
+  <div class="shell">
+    <nav class="hubnav" aria-label="Tools">
+      <a class="hub-pill" href="https://velocitybench.com/"><span class="hub-dot" aria-hidden="true"></span>Tools Hub</a>
+      <span class="hub-here">Car Performance Tools</span>
+    </nav>
+
+    <header class="top">
+      <p class="kicker">Gear &amp; RPM</p>
+      <h1>GearCalc</h1>
+      <p class="top-lede">Speed in every gear, RPM at any speed, top speed at redline and the RPM drop on each shift. Every preset is from a published source.</p>
+    </header>
+
+    <main>
+      <!-- 1 · Tire -->
+      <section class="card" aria-labelledby="tire-h">
+        <div class="card-head"><h2 id="tire-h"><span class="step-n">1</span>Tire</h2><p class="card-sub">Metric, LT/P-metric, flotation, or a measured diameter</p></div>
+        <div class="field big-field" id="tire-field">
+          <label class="sr" for="tire">Tire size</label>
+          <input id="tire" class="big-in" type="text" autocomplete="off" spellcheck="false" value="315/35R17" aria-describedby="tire-msg">
+          <span class="field-sym" id="tire-kind"></span>
+        </div>
+        <p id="tire-msg" class="in-msg" aria-live="polite"></p>
+        <div class="readout" id="tire-read"></div>
+        <p class="mini-h">Try a format</p>
+        <div class="chips-row" id="tire-ex">
+          <button type="button" class="chip-btn" data-v="315/35R17">315/35R17</button>
+          <button type="button" class="chip-btn" data-v="P245/45ZR18">P245/45ZR18</button>
+          <button type="button" class="chip-btn" data-v="LT285/70R17">LT285/70R17</button>
+          <button type="button" class="chip-btn" data-v="28x10.5R15">28x10.5R15</button>
+          <button type="button" class="chip-btn" data-v="33x12.50R20LT">33x12.50R20LT</button>
+          <button type="button" class="chip-btn" data-v="26.0 in">26.0 in</button>
+          <button type="button" class="chip-btn" data-v="660 mm">660 mm</button>
+        </div>
+        <p class="mini-h" id="roll-lbl">Diameter used</p>
+        <div class="seg seg-wrap" id="roll-mode" role="radiogroup" aria-labelledby="roll-lbl">
+          <button type="button" role="radio" data-id="unloaded">Unloaded (nominal)</button>
+          <button type="button" role="radio" data-id="factor">Rolling factor</button>
+          <button type="button" role="radio" data-id="loaded">Loaded radius</button>
+        </div>
+        <div class="roll-extra" id="roll-extra" hidden>
+          <label class="lbl" for="roll-val" id="roll-val-lbl">Factor</label>
+          <div class="stepper wide"><button type="button" class="step" data-for="roll-val" data-step="-1" aria-label="Decrease">−</button>
+            <input id="roll-val" type="text" inputmode="decimal" autocomplete="off"><button type="button" class="step" data-for="roll-val" data-step="1" aria-label="Increase">+</button></div>
+          <p class="hint" id="roll-hint"></p>
+        </div>
+      </section>
+
+      <!-- 2 · Transmission -->
+      <section class="card" aria-labelledby="trans-h">
+        <div class="card-head"><h2 id="trans-h"><span class="step-n">2</span>Transmission</h2><p class="card-sub">Pick a sourced preset or enter your own ratios</p></div>
+        <div id="presets" class="presets" role="radiogroup" aria-label="Transmission preset"></div>
+        <div class="src-box" id="preset-src" aria-live="polite"></div>
+        <div class="gears-head">
+          <p class="mini-h" id="gcount-lbl">Forward gears</p>
+          <div class="seg seg-count" id="gcount" role="radiogroup" aria-labelledby="gcount-lbl"></div>
+        </div>
+        <div class="ratios" id="ratios"></div>
+        <p id="ratio-msg" class="in-msg" aria-live="polite"></p>
+      </section>
+
+      <!-- 3 · Drivetrain + query -->
+      <section class="card" aria-labelledby="dt-h">
+        <div class="card-head"><h2 id="dt-h"><span class="step-n">3</span>Axle, engine &amp; query</h2></div>
+        <div class="num-grid">
+          <div class="num-cell">
+            <label class="lbl" for="fd">Final drive</label>
+            <div class="stepper"><button type="button" class="step" data-for="fd" data-step="-1" aria-label="Lower final drive">−</button>
+              <input id="fd" type="text" inputmode="decimal" value="3.42" autocomplete="off"><button type="button" class="step" data-for="fd" data-step="1" aria-label="Higher final drive">+</button></div>
+            <span class="unit">ratio : 1</span>
+          </div>
+          <div class="num-cell">
+            <label class="lbl" for="redline">Redline</label>
+            <div class="stepper"><button type="button" class="step" data-for="redline" data-step="-1" aria-label="Lower redline">−</button>
+              <input id="redline" type="text" inputmode="numeric" value="6500" autocomplete="off"><button type="button" class="step" data-for="redline" data-step="1" aria-label="Higher redline">+</button></div>
+            <span class="unit">rpm</span>
+          </div>
+          <div class="num-cell">
+            <label class="lbl" for="slip">Converter slip</label>
+            <div class="stepper"><button type="button" class="step" data-for="slip" data-step="-1" aria-label="Less slip">−</button>
+              <input id="slip" type="text" inputmode="decimal" value="0" autocomplete="off"><button type="button" class="step" data-for="slip" data-step="1" aria-label="More slip">+</button></div>
+            <span class="unit">%</span>
+          </div>
+          <div class="num-cell">
+            <label class="lbl" for="rpm">At engine RPM</label>
+            <div class="stepper"><button type="button" class="step" data-for="rpm" data-step="-1" aria-label="Lower RPM">−</button>
+              <input id="rpm" type="text" inputmode="numeric" value="3000" autocomplete="off"><button type="button" class="step" data-for="rpm" data-step="1" aria-label="Higher RPM">+</button></div>
+            <span class="unit">rpm</span>
+          </div>
+          <div class="num-cell">
+            <label class="lbl" for="speed">At road speed</label>
+            <div class="stepper"><button type="button" class="step" data-for="speed" data-step="-1" aria-label="Lower speed">−</button>
+              <input id="speed" type="text" inputmode="decimal" value="60" autocomplete="off"><button type="button" class="step" data-for="speed" data-step="1" aria-label="Higher speed">+</button></div>
+            <div class="seg seg-sm" id="sunit" role="radiogroup" aria-label="Speed unit">
+              <button type="button" role="radio" data-id="mph">mph</button><button type="button" role="radio" data-id="kmh">km/h</button>
+            </div>
+          </div>
+        </div>
+        <p class="hint" id="slip-hint">Slip is for automatics with an unlocked converter: road speed is that % below the no-slip value, so engine RPM at a given speed is the no-slip RPM ÷ (1 − slip). Leave at 0 for a manual or a locked converter.</p>
+        <p id="dt-msg" class="in-msg err" aria-live="polite"></p>
+      </section>
+
+      <!-- Results -->
+      <section class="card results" aria-labelledby="res-h">
+        <div class="card-head"><h2 id="res-h">Per gear</h2><p class="card-sub mono" id="res-sub"></p></div>
+        <div class="gear-cards" id="gear-cards"></div>
+      </section>
+
+      <section class="card chart-card" aria-labelledby="chart-h">
+        <div class="card-head"><h2 id="chart-h">Speed vs RPM</h2><p class="card-sub">Shift at redline · labels above the peaks are gears · amber dashes are the RPM drop on each shift</p></div>
+        <div class="chart-wrap" id="chart-wrap"><svg id="chart" role="img" aria-labelledby="chart-h chart-desc"><desc id="chart-desc">Sawtooth of engine RPM against road speed, shifting at redline in each gear.</desc></svg></div>
+      </section>
+
+      <section class="card sources" aria-labelledby="src-h">
+        <h2 id="src-h">Math &amp; sources</h2>
+        <ul class="conv-notes">
+          <li><b>Speed:</b> mph = RPM × D × π ÷ (gear × final drive × 1056) × (1 − slip). 1056 = 63 360 in per mile ÷ 60 min per hour, both exact. km/h = mph × 1.609344 (exact).</li>
+          <li><b>RPM at speed:</b> RPM = mph × gear × final drive × 1056 ÷ (π × D) ÷ (1 − slip).</li>
+          <li><b>Shift landing:</b> landing RPM = redline × next ratio ÷ current ratio; drop = redline − landing.</li>
+          <li><b>Tire diameter:</b> metric = rim + 2 × section × aspect ÷ 100 ÷ 25.4 (inch = 25.4 mm exactly). Flotation = the first number. Revs per mile = 63 360 ÷ (π × D).</li>
+          <li><b>Diameter used:</b> the unloaded, nominal diameter by default. A loaded tire rolls on a slightly smaller effective radius, so real speed at a given RPM is a little lower. Enter a rolling factor or a measured loaded radius if you have one. GearCalc does not assume a value.</li>
+          <li><b>Slip:</b> a torque converter that isn't locked lets the engine spin faster than the input shaft. GearCalc models this as a flat percentage you enter.</li>
+        </ul>
+        <h3 class="sub-h">Preset sources</h3>
+        <ul id="src-list" class="src-list"></ul>
+        <h3 class="sub-h">Left out (not verified or out of range)</h3>
+        <ul id="excl-list" class="src-list dim"></ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <strong>Created by Jorge Guerra</strong>
+      <p class="footer-note">Works offline. No tracking, no network requests.</p>
+    </footer>
+  </div>
+
+  <script src="js/presets.js"></script>
+  <script src="js/gear.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
